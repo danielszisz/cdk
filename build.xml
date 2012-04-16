@@ -303,6 +303,7 @@
               <param name="module" value="${module}"/>
           </antcall>
 
+          <ant antfile="javadoc.xml" target="compileDocTests"/>
           <ant antfile="javadoc.xml" target="ojdcheck-module">
               <property name="module" value="${module}"/>
           </ant>
@@ -798,13 +799,14 @@
             </jar>
         </target>
 
-        <target id="dist-test-large" name="dist-test-large" depends="test-dist-all"
+        <target id="dist-test-large" name="dist-test-large" depends="test-dist-all, jarTestdata"
             description="Builds on big jar file for the CDK test classes.">
 
             <!-- first unjar the CDK and other jars we need -->
             <mkdir dir="${appjars.dir}"/>
             <unjar dest="${appjars.dir}">
                 <fileset dir="${lib}">
+                    <includesfile name="${metainf}/test.libdepends"/>
                     <includesfile name="${metainf}/test-core.libdepends"/>
                     <includesfile name="${metainf}/test-data.libdepends"/>
                     <includesfile name="${metainf}/test-datadebug.libdepends"/>
@@ -838,6 +840,8 @@
                     <includesfile name="${metainf}/test-cip.libdepends"/>
                 </fileset>
                 <fileset dir="${dist}/jar">
+                    <include name="cdk-test.jar"/>
+                    <include name="cdk-testdata.jar"/>
                     <include name="cdk-test-annotation.jar"/>
                     <include name="cdk-test-ioformats.jar"/>
                     <include name="cdk-test-core.jar"/>
@@ -1025,7 +1029,7 @@
         </target>
 
         <target id="noJunit" name="noJunit" depends="check" unless="junit.present">
-            <fail message="JUnit is not installed in Ant. Please run ant with the option '-lib develjar/junit-4.3.1.jar'."/>
+            <fail message="JUnit is not installed in Ant. Please run ant with the option '-lib develjar/junit-4.10.jar'."/>
         </target>
         
 		<target id="test-module" name="test-module" depends="noJunit"
